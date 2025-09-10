@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49588e3a-73d9-49b3-bdb2-45e7ac6391c0" name="Changes" comment="Initial commit: Flask web app for incident management in control room&#10;&#10;- Base structure with Flask and TinyDB&#10;- Incident creation with status, priority, operator, type (Incident/Change)&#10;- Manual operator assignment&#10;- Update functionality with history tracking&#10;- Timestamp logging for each change&#10;- Automatic calculation of work duration&#10;- Simple HTML interface for viewing and editing incidents">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="49588e3a-73d9-49b3-bdb2-45e7ac6391c0" name="Changes" comment="Initial commit: Flask web app for incident management in control room&#10;&#10;- Base structure with Flask and TinyDB&#10;- Incident creation with status, priority, operator, type (Incident/Change)&#10;- Manual operator assignment&#10;- Update functionality with history tracking&#10;- Timestamp logging for each change&#10;- Automatic calculation of work duration&#10;- Simple HTML interface for viewing and editing incidents" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -82,7 +79,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757514269218</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Initial commit: Flask web app for incident management in control room&#10;&#10;- Base structure with Flask and TinyDB&#10;- Incident creation with status, priority, operator, type (Incident/Change)&#10;- Manual operator assignment&#10;- Update functionality with history tracking&#10;- Timestamp logging for each change&#10;- Automatic calculation of work duration&#10;- Simple HTML interface for viewing and editing incidents">
+      <option name="closed" value="true" />
+      <created>1757516010857</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1757516010857</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
