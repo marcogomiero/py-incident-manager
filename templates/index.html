@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Incident Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
+        th { background-color: #f2f2f2; }
+        form { margin-bottom: 30px; }
+        input, select, textarea { margin: 5px 0; padding: 8px; width: 100%; }
+        input[type="submit"] { width: auto; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        input[type="submit"]:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>Incident Manager</h1>
+
+    <h2>Aggiungi nuovo elemento</h2>
+    <form action="/add" method="post">
+        <label for="title">Titolo:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Descrizione:</label>
+        <textarea id="description" name="description"></textarea>
+
+        <label for="status">Stato:</label>
+        <select id="status" name="status">
+            <option value="Aperto">Aperto</option>
+            <option value="In lavorazione">In lavorazione</option>
+            <option value="Risolto">Risolto</option>
+            <option value="Chiuso">Chiuso</option>
+        </select>
+
+        <label for="priority">Priorità:</label>
+        <select id="priority" name="priority">
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Bassa">Bassa</option>
+        </select>
+
+        <label for="operator">Operatore:</label>
+        <input type="text" id="operator" name="operator" required>
+
+        <label for="type">Tipo:</label>
+        <select id="type" name="type">
+            <option value="Incident">Incident</option>
+            <option value="Attività/Change">Attività/Change</option>
+        </select>
+
+        <input type="submit" value="Aggiungi">
+    </form>
+
+    <h2>Lista elementi</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Titolo</th>
+            <th>Descrizione</th>
+            <th>Stato</th>
+            <th>Priorità</th>
+            <th>Operatore</th>
+            <th>Tipo</th>
+            <th>Data/Ora</th>
+            <th>Durata</th>
+            <th>Storico</th>
+            <th>Aggiorna</th>
+        </tr>
+        {% for incident in incidents %}
+        <tr>
+            <td>{{ loop.index0 }}</td>
+            <td>{{ incident.title }}</td>
+            <td>{{ incident.description }}</td>
+            <td>{{ incident.status }}</td>
+            <td>{{ incident.priority }}</td>
+            <td>{{ incident.operator }}</td>
+            <td>{{ incident.type }}</td>
+            <td>{{ incident.timestamp }}</td>
+            <td>{{ incident.work_duration }}</td>
+            <td>
+                {% for entry in incident.history %}
+                    <div>
+                        <strong>{{ entry.timestamp }}</strong><br>
+                        Stato: {{ entry.status }}<br>
+                        Operatore: {{ entry.operator }}<br>
+                        Descrizione: {{ entry.description }}<br><br>
+                    </div>
+                {% endfor %}
+            </td>
+            <td>
+                <form action="/update/{{ loop.index0 }}" method="post">
+                    <select name="status">
+                        <option value="Aperto" {% if incident.status == 'Aperto' %}selected{% endif %}>Aperto</option>
+                        <option value="In lavorazione" {% if incident.status == 'In lavorazione' %}selected{% endif %}>In lavorazione</option>
+                        <option value="Risolto" {% if incident.status == 'Risolto' %}selected{% endif %}>Risolto</option>
+                        <option value="Chiuso" {% if incident.status == 'Chiuso' %}selected{% endif %}>Chiuso</option>
+                    </select>
+                    <textarea name="description">{{ incident.description }}</textarea>
+                    <input type="text" name="operator" value="{{ incident.operator }}">
+                    <input type="submit" value="Aggiorna">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
