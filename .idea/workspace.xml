@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49588e3a-73d9-49b3-bdb2-45e7ac6391c0" name="Changes" comment="Initial commit: Flask web app for incident management in control room&#10;&#10;- Base structure with Flask and TinyDB&#10;- Incident creation with status, priority, operator, type (Incident/Change)&#10;- Manual operator assignment&#10;- Update functionality with history tracking&#10;- Timestamp logging for each change&#10;- Automatic calculation of work duration&#10;- Simple HTML interface for viewing and editing incidents">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/incidents.json" beforeDir="false" afterPath="$PROJECT_DIR$/incidents.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +49,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/gomiero1/PycharmProjects/PythonProject/COC_INCIDENT_MANAGER/templates"
   }
 }]]></component>
