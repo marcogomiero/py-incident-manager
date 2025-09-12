@@ -1,0 +1,211 @@
+/* General Body Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6; /* Light gray background */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Main Heading */
+h1 {
+    color: #2c3e50; /* Dark blue-gray */
+    border-bottom: 3px solid #3498db; /* Blue border */
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: 300;
+}
+
+/* Section Headings */
+h2 {
+    color: #34495e; /* Slightly lighter dark blue-gray */
+    border-bottom: 2px solid #bdc3c7; /* Lighter gray border */
+    padding-bottom: 8px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    font-weight: 400;
+}
+
+/* Section Containers */
+.section-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+/* Form Styles */
+form {
+    margin-top: 20px;
+}
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-row input[type="text"],
+.form-row textarea,
+.form-row select {
+    width: calc(100% - 20px); /* Account for padding */
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.form-row input[type="text"]:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+    border-color: #3498db; /* Blue on focus */
+    outline: none;
+}
+
+/* Buttons */
+button[type="submit"] {
+    display: inline-block;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745; /* Green for submit */
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 15px;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-1px);
+}
+
+/* Search Form specific styling */
+#search-form-container {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically align items */
+    gap: 10px; /* Space between items */
+    padding: 20px;
+}
+
+#search-form-container h2 {
+    margin: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    font-size: 1.5em; /* Smaller heading for search */
+}
+
+#search-form-container form {
+    display: flex;
+    flex-grow: 1; /* Allows form to take available space */
+    gap: 10px;
+    margin-top: 0;
+}
+
+#search-form-container input[type="text"] {
+    flex-grow: 1; /* Input takes most of the space */
+    width: auto; /* Override specific width */
+}
+
+#search-form-container button {
+    flex-shrink: 0; /* Button doesn't shrink */
+    width: auto; /* Override specific width */
+    margin-top: 0;
+    background-color: #007bff; /* Blue for search button */
+}
+
+#search-form-container button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners apply to content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0; /* Lighter border for rows */
+}
+
+th {
+    background-color: #e9ecef; /* Light gray for table header */
+    color: #495057; /* Darker text for header */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+tr:hover {
+    background-color: #f8f9fa; /* Very light gray on row hover */
+}
+
+/* Link Styles */
+a {
+    color: #3498db; /* Blue for links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #2980b9; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+/* Specific details page styling */
+.details-container, .history-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.history-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.history-container li {
+    border-bottom: 1px dashed #e0e0e0; /* Dashed separator */
+    padding: 15px 0;
+    margin-bottom: 10px;
+}
+
+.history-container li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.history-container li strong {
+    color: #444;
+}
+
+/* Archive search results specific */
+.archive-results p {
+    font-style: italic;
+    color: #666;
+    margin-top: 20px;
+    text-align: center;
+}
