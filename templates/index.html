@@ -4,111 +4,34 @@
     <meta charset="UTF-8">
     <title>Incident Management</title>
     <style>
-        body {
-            font-family: sans-serif;
-            margin: 2em;
-        }
-
-        /* General section styling */
-        .section-container {
-            margin-bottom: 2em;
-        }
-
-        /* Section heading styling */
-        .section-container h2 {
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-            margin-top: 30px;
-        }
-
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1em;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        /* --- Modal (Popup) Styles --- */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Form styles inside modal */
-        .form-row {
-            margin-bottom: 10px;
-        }
+        body { font-family: sans-serif; margin: 2em; }
+        .section-container { margin-bottom: 2em; }
+        .section-container h2 { border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0;
+                 width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px;
+                         border: 1px solid #888; width: 80%; border-radius: 8px; position: relative; }
+        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
+        .form-row { margin-bottom: 10px; }
         .form-row label, .form-row input, .form-row textarea, .form-row select, .form-row button {
-            display: block;
-            margin-bottom: 10px;
+            display: block; margin-bottom: 10px;
         }
         .form-row input, .form-row textarea, .form-row select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: 100%; padding: 8px; box-sizing: border-box;
+            border: 1px solid #ccc; border-radius: 4px;
         }
         .form-row button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
+            padding: 10px 15px; border: none; border-radius: 4px;
+            background-color: #007bff; color: white; cursor: pointer;
         }
-
-        /* Button to open modal */
         .add-button {
-            padding: 10px 20px;
-            font-size: 1.1em;
-            cursor: pointer;
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border: none;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            padding: 10px 20px; font-size: 1.1em; cursor: pointer;
+            background-color: #4CAF50; color: white; border: none;
+            border-radius: 4px; margin-bottom: 20px;
         }
     </style>
 </head>
@@ -145,7 +68,11 @@
             <tbody>
                 {% for incident in incidents %}
                 <tr>
-                    <td><a href="{{ url_for('incident_details', unique_id=incident.unique_id) }}">{{ incident.doc_id }}</a></td>
+                    <td>
+                      <a href="{{ url_for('incident_details', unique_id=incident.unique_id) }}">
+                        {{ incident.uuid }}
+                      </a>
+                    </td>
                     <td>{{ incident.title }}</td>
                     <td>{{ incident.status }}</td>
                     <td>{{ incident.priority }}</td>
@@ -168,12 +95,10 @@
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
-
             <div class="form-row">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description"></textarea>
             </div>
-
             <div class="form-row">
                 <label for="status">Status:</label>
                 <select id="status" name="status">
@@ -184,7 +109,6 @@
                     <option value="Closed">Closed</option>
                 </select>
             </div>
-
             <div class="form-row">
                 <label for="priority">Priority:</label>
                 <select id="priority" name="priority">
@@ -193,12 +117,10 @@
                     <option value="High">High</option>
                 </select>
             </div>
-
             <div class="form-row">
                 <label for="operator">Operator:</label>
                 <input type="text" id="operator" name="operator" required>
             </div>
-
             <div class="form-row">
                 <label for="type">Type:</label>
                 <select id="type" name="type">
@@ -208,7 +130,6 @@
                     <option value="Incident">Incident</option>
                 </select>
             </div>
-
             <button type="submit">Add</button>
         </form>
       </div>

@@ -1,78 +1,72 @@
 from flask import Flask, render_template, request, redirect, url_for
 from tinydb import TinyDB, Query
 from datetime import datetime
-import os
+import os, uuid
 
 app = Flask(__name__)
 db = TinyDB('incidents.json')
 Incident = Query()
 
-# Path per la directory di archiviazione
 ARCHIVE_DIR = 'incident_archives'
-if not os.path.exists(ARCHIVE_DIR):
-    os.makedirs(ARCHIVE_DIR)
+os.makedirs(ARCHIVE_DIR, exist_ok=True)
 
 
 @app.route('/')
 def index():
-    # Carica tutti gli incidenti dal database principale
     incidents = db.all()
 
-    # Assegna un ID univoco a ogni incidente dal database principale
+    # DB principale
     for inc in incidents:
-        inc['unique_id'] = f"main-{inc.doc_id}"
+        if 'uuid' not in inc:
+            inc['uuid'] = str(uuid.uuid4())
+            db.update({'uuid': inc['uuid']}, doc_ids=[inc.doc_id])
+        inc['unique_id'] = f"main::{inc['uuid']}"
 
-    # Carica gli incidenti da tutti i file di archivio
+    # Archivi
     for filename in os.listdir(ARCHIVE_DIR):
         if filename.endswith('.json'):
             archive_db = TinyDB(os.path.join(ARCHIVE_DIR, filename))
-            archived_incidents = archive_db.all()
-            for inc in archived_incidents:
-                # Assegna un ID univoco a ogni incidente archiviato
-                inc['unique_id'] = f"archive-{filename}-{inc.doc_id}"
-            incidents.extend(archived_incidents)
+            for inc in archive_db.all():
+                if 'uuid' not in inc:
+                    inc['uuid'] = str(uuid.uuid4())
+                    archive_db.update({'uuid': inc['uuid']}, doc_ids=[inc.doc_id])
+                # assegnazione dell'ID corretto per l'archivio
+                inc['unique_id'] = f"archive::{filename}::{inc['uuid']}"
+                incidents.append(inc)
 
-    # Ordina tutti gli incidenti (aperti e archiviati) per data in ordine decrescente
     incidents.sort(key=lambda x: datetime.strptime(x['timestamp'], '%Y-%m-%d %H:%M:%S'), reverse=True)
+    recent = incidents[:10]
 
-    # Seleziona solo gli ultimi 10 incidenti
-    recent_incidents = incidents[:10]
-
-    for incident in recent_incidents:
-        if 'history' in incident and len(incident['history']) > 0:
-            start_time = datetime.strptime(incident['timestamp'], '%Y-%m-%d %H:%M:%S')
-            last_update = datetime.strptime(incident['history'][-1]['timestamp'], '%Y-%m-%d %H:%M:%S')
-            duration = last_update - start_time
-            incident['work_duration'] = str(duration)
+    for i in recent:
+        if i.get('history'):
+            start = datetime.strptime(i['timestamp'], '%Y-%m-%d %H:%M:%S')
+            last = datetime.strptime(i['history'][-1]['timestamp'], '%Y-%m-%d %H:%M:%S')
+            i['work_duration'] = str(last - start)
         else:
-            incident['work_duration'] = 'N/A'
+            i['work_duration'] = 'N/A'
 
-    return render_template('index.html', incidents=recent_incidents)
+    return render_template('index.html', incidents=recent)
 
 
 @app.route('/add', methods=['POST'])
 def add_incident():
-    title = request.form['title']
-    description = request.form['description']
-    status = request.form['status']
-    priority = request.form['priority']
-    operator = request.form['operator']
-    incident_type = request.form['type']
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    uid = str(uuid.uuid4())
     history = [{
-        'timestamp': timestamp,
-        'status': status,
-        'description': description,
-        'operator': operator
+        'timestamp': now,
+        'status': request.form['status'],
+        'description': request.form['description'],
+        'operator': request.form['operator']
     }]
     db.insert({
-        'title': title,
-        'description': description,
-        'status': status,
-        'priority': priority,
-        'operator': operator,
-        'type': incident_type,
-        'timestamp': timestamp,
+        'uuid': uid,
+        'title': request.form['title'],
+        'description': request.form['description'],
+        'status': request.form['status'],
+        'priority': request.form['priority'],
+        'operator': request.form['operator'],
+        'type': request.form['type'],
+        'timestamp': now,
         'history': history
     })
     return redirect(url_for('index'))
@@ -85,114 +79,103 @@ def update_incident(unique_id):
     operator = request.form['operator']
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    parts = unique_id.split('-')
-    source = parts[0]
-    doc_id = int(parts[-1])
+    source, rest = unique_id.split("::", 1)
 
-    incident = None
-    if source == 'main':
-        incident = db.get(doc_id=doc_id)
-        if incident:
-            incident['status'] = status
-            incident['description'] = description
-            incident['operator'] = operator
-            incident['history'].append({
+    if source == "main":
+        inc = db.get(Incident.uuid == rest)
+        if inc:
+            inc['status'] = status
+            inc['description'] = description
+            inc['operator'] = operator
+            inc['history'].append({
                 'timestamp': timestamp,
                 'status': status,
                 'description': description,
                 'operator': operator
             })
+
             if status.lower() in ['resolved', 'closed']:
                 today = datetime.now().strftime('%Y-%m-%d')
                 archive_file = os.path.join(ARCHIVE_DIR, f'incidents_archive_{today}.json')
                 archive_db = TinyDB(archive_file)
-                incident_dict = dict(incident)
-                if 'doc_id' in incident_dict:
-                    del incident_dict['doc_id']
-                archive_db.insert(incident_dict)
-                db.remove(doc_ids=[doc_id])
-                db.compact()
+
+                # clona il record senza doc_id e assegna subito l'unique_id corretto
+                to_archive = {k: v for k, v in inc.items() if k != 'doc_id'}
+                to_archive['unique_id'] = f"archive::{os.path.basename(archive_file)}::{to_archive['uuid']}"
+                archive_db.insert(to_archive)
+
+                db.remove(doc_ids=[inc.doc_id])
             else:
-                db.update(incident, doc_ids=[incident.doc_id])
-    elif source == 'archive':
-        filename = '-'.join(parts[1:-1])
-        archive_file_path = os.path.join(ARCHIVE_DIR, filename)
-        if os.path.exists(archive_file_path):
-            archive_db = TinyDB(archive_file_path)
-            incident = archive_db.get(doc_id=doc_id)
-            if incident:
-                incident['status'] = status
-                incident['description'] = description
-                incident['operator'] = operator
-                incident['history'].append({
+                db.update(inc, doc_ids=[inc.doc_id])
+
+    elif source == "archive":
+        fname, uid = rest.rsplit("::", 1)
+        archive_file = os.path.join(ARCHIVE_DIR, fname)
+        if os.path.exists(archive_file):
+            adb = TinyDB(archive_file)
+            inc = adb.get(Incident.uuid == uid)
+            if inc:
+                inc['status'] = status
+                inc['description'] = description
+                inc['operator'] = operator
+                inc['history'].append({
                     'timestamp': timestamp,
                     'status': status,
                     'description': description,
                     'operator': operator
                 })
-                archive_db.update(incident, doc_ids=[incident.doc_id])
+                adb.update(inc, doc_ids=[inc.doc_id])
+                adb.compact()
 
     return redirect(url_for('index'))
 
 
 @app.route('/incident/<string:unique_id>')
 def incident_details(unique_id):
-    parts = unique_id.split('-')
-    source = parts[0]
-    doc_id = int(parts[-1])
-
+    source, rest = unique_id.split("::", 1)
     incident = None
-    if source == 'main':
-        incident = db.get(doc_id=doc_id)
-        if incident:
-            # Aggiungi unique_id all'incidente per il form di aggiornamento
-            incident['unique_id'] = f"main-{incident.doc_id}"
-    elif source == 'archive':
-        filename = '-'.join(parts[1:-1])
-        archive_file_path = os.path.join(ARCHIVE_DIR, filename)
-        if os.path.exists(archive_file_path):
-            archive_db = TinyDB(archive_file_path)
-            incident = archive_db.get(doc_id=doc_id)
-            if incident:
-                # Aggiungi unique_id all'incidente per il form di aggiornamento
-                incident['unique_id'] = f"archive-{filename}-{incident.doc_id}"
+    if source == "main":
+        incident = db.get(Incident.uuid == rest)
+    elif source == "archive":
+        fname, uid = rest.rsplit("::", 1)
+        path = os.path.join(ARCHIVE_DIR, fname)
+        if os.path.exists(path):
+            adb = TinyDB(path)
+            incident = adb.get(Incident.uuid == uid)
 
-    if incident:
-        if 'history' in incident and len(incident['history']) > 0:
-            start_time = datetime.strptime(incident['timestamp'], '%Y-%m-%d %H:%M:%S')
-            last_update = datetime.strptime(incident['history'][-1]['timestamp'], '%Y-%m-%d %H:%M:%S')
-            duration = last_update - start_time
-            incident['work_duration'] = str(duration)
-        else:
-            incident['work_duration'] = 'N/A'
-        return render_template('details.html', incident=incident)
-    return "Incident not found", 404
+    if not incident:
+        return "Incident not found", 404
+
+    incident['unique_id'] = unique_id
+    if incident.get('history'):
+        start = datetime.strptime(incident['timestamp'], '%Y-%m-%d %H:%M:%S')
+        last = datetime.strptime(incident['history'][-1]['timestamp'], '%Y-%m-%d %H:%M:%S')
+        incident['work_duration'] = str(last - start)
+    else:
+        incident['work_duration'] = 'N/A'
+
+    return render_template('details.html', incident=incident)
 
 
 @app.route('/search_archives')
 def search_archives():
     query = request.args.get('query', '').lower()
     results = []
-
     for filename in os.listdir(ARCHIVE_DIR):
         if filename.endswith('.json'):
-            archive_db = TinyDB(os.path.join(ARCHIVE_DIR, filename))
-            found_incidents = archive_db.search(
+            adb = TinyDB(os.path.join(ARCHIVE_DIR, filename))
+            for inc in adb.search(
                 (Incident.title.matches(f'(?i).*{query}.*')) |
                 (Incident.description.matches(f'(?i).*{query}.*'))
-            )
-
-            for inc in found_incidents:
-                if 'history' in inc and len(inc['history']) > 0:
-                    start_time = datetime.strptime(inc['timestamp'], '%Y-%m-%d %H:%M:%S')
-                    last_update = datetime.strptime(inc['history'][-1]['timestamp'], '%Y-%m-%d %H:%M:%S')
-                    duration = last_update - start_time
-                    inc['work_duration'] = str(duration)
+            ):
+                if inc.get('history'):
+                    start = datetime.strptime(inc['timestamp'], '%Y-%m-%d %H:%M:%S')
+                    last = datetime.strptime(inc['history'][-1]['timestamp'], '%Y-%m-%d %H:%M:%S')
+                    inc['work_duration'] = str(last - start)
                 else:
                     inc['work_duration'] = 'N/A'
-                inc['unique_id'] = f"archive-{filename}-{inc.doc_id}"  # Crea l'ID unico
+                inc['unique_id'] = f"archive::{filename}::{inc['uuid']}"
                 results.append(inc)
-
     return render_template('archive_results.html', results=results, query=query)
 
 
