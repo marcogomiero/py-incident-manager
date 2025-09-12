@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49588e3a-73d9-49b3-bdb2-45e7ac6391c0" name="Changes" comment="Fix delete route: remove obsolete TinyDB compact() call&#10;&#10;- Updated /delete endpoint to use only TinyDB.remove() for both main and archive databases.&#10;- Dropped the unsupported compact() call that caused AttributeError on deletion.&#10;- Deletion of incidents (including archived ones) now works without errors.">
-      <change beforePath="$PROJECT_DIR$/incidents.json" beforeDir="false" afterPath="$PROJECT_DIR$/incidents.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +145,23 @@
       <option name="project" value="LOCAL" />
       <updated>1757690099586</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Fix delete route: remove obsolete TinyDB compact() call&#10;&#10;- Updated /delete endpoint to use only TinyDB.remove() for both main and archive databases.&#10;- Dropped the unsupported compact() call that caused AttributeError on deletion.&#10;- Deletion of incidents (including archived ones) now works without errors.">
+      <option name="closed" value="true" />
+      <created>1757690623675</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1757690623675</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Fix delete route: remove obsolete TinyDB compact() call&#10;&#10;- Updated /delete endpoint to use only TinyDB.remove() for both main and archive databases.&#10;- Dropped the unsupported compact() call that caused AttributeError on deletion.&#10;- Deletion of incidents (including archived ones) now works without errors.">
+      <option name="closed" value="true" />
+      <created>1757690755719</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1757690755719</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

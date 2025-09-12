@@ -27,11 +27,14 @@ Run it locally, offline, and look like you own the control room.
 🖼 Screenshots (coming soon)
 --------------
 
-**Dashboard**
+**Dashboard**  
+![Dashboard](docs/screens/main.png)
 
-**Add New Incident**
+**Add New Incident**  
+![Add Incident](docs/screens/new_incident.png)
 
-**Incident Details & History**
+**Incident Details & History**  
+![Details](docs/screens/details.png)
 
 * * * * *
 
