@@ -1,1 +1,1 @@
-{"_default": {}}
+{"_default": {"1": {"uuid": "5f5333af-9e46-4cfd-9d8c-cfbdf9b7906b", "title": "ciao", "description": "come va?", "status": "Open", "priority": "High", "operator": "Elvis Del Tedesco", "type": "Incident", "timestamp": "2025-09-12 16:56:30", "history": [{"timestamp": "2025-09-12 16:56:30", "status": "Open", "description": "come va?", "operator": "Elvis Del Tedesco"}]}}}
