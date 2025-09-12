@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Search results for "{{ query }}"</h1>
+
+    {% if results %}
+    <div class="section-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Type</th>
+                    <th>Operator</th>
+                    <th>Open Date</th>
+                    <th>Close Date</th>
+                    <th>Work Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for incident in results %}
+                <tr>
+                    <td><a href="{{ url_for('incident_details', unique_id=incident.unique_id) }}">{{ incident.doc_id }}</a></td>
+                    <td>{{ incident.title }}</td>
+                    <td>{{ incident.status }}</td>
+                    <td>{{ incident.priority }}</td>
+                    <td>{{ incident.type }}</td>
+                    <td>{{ incident.operator }}</td>
+                    <td>{{ incident.timestamp }}</td>
+                    <td>
+                        {% if incident.history %}
+                            {{ incident.history[-1].timestamp }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ incident.work_duration }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No incidents found in archives with the query "{{ query }}".</p>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}">Back to main list</a>
+</body>
+</html>
