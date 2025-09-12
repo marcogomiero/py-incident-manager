@@ -1,4 +1,4 @@
-🛠️ Flask Incident Manager
+🛠️ Py Incident Manager
 ==========================
 
 A lightweight web application for managing incidents and planned activities/changes in a control room, built with Flask and TinyDB.
