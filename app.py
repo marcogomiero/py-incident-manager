@@ -156,6 +156,19 @@ def incident_details(unique_id):
 
     return render_template('details.html', incident=incident)
 
+@app.route('/delete/<string:unique_id>', methods=['POST'])
+def delete_incident(unique_id):
+    source, rest = unique_id.split("::", 1)
+    if source == "main":
+        db.remove(Incident.uuid == rest)
+    elif source == "archive":
+        fname, uid = rest.rsplit("::", 1)
+        path = os.path.join(ARCHIVE_DIR, fname)
+        if os.path.exists(path):
+            adb = TinyDB(path)
+            adb.remove(Incident.uuid == uid)   # basta questo
+    return redirect(url_for('index'))
+
 
 @app.route('/search_archives')
 def search_archives():
